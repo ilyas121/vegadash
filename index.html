@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drone Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Drone Telemetry Dashboard</h1>
+
+  <div class="container">
+    <h2>Receiver Channels</h2>
+    <pre id="receiver">Waiting for data...</pre>
+
+    <h2>IMU Data</h2>
+    <pre id="imu">Waiting for data...</pre>
+
+    <h2>PID Output</h2>
+    <pre id="pid">Waiting for data...</pre>
+
+    <h2>Motor Values</h2>
+    <pre id="motors">Waiting for data...</pre>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
