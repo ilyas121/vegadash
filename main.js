@@ -10,7 +10,14 @@ app.whenReady().then(() => {
     }
   });
 
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools();
+
+  // Load the index.html of the app.
   mainWindow.loadFile("index.html");
+
+  // Open the window in fullscreen
+  mainWindow.setFullScreen(true);
 });
 
 app.on("window-all-closed", () => {

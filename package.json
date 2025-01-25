@@ -5,14 +5,28 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:css": "./node_modules/.bin/tailwindcss -i ./styles.css -o ./dist/output.css",
+    "watch:css": "./node_modules/.bin/tailwindcss -i ./styles.css -o ./dist/output.css --watch"
   },
   "author": "Ilyas Salhi",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^34.0.0"
+    "autoprefixer": "10.4.17",
+    "electron": "^34.0.0",
+    "postcss": "8.4.35",
+    "tailwindcss": "3.4.1"
   },
   "dependencies": {
     "axios": "^1.7.9"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ilyas121/vegadash.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/ilyas121/vegadash/issues"
+  },
+  "homepage": "https://github.com/ilyas121/vegadash#readme"
 }

@@ -1,28 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Drone Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <h1>Drone Telemetry Dashboard</h1>
+    <head>
+        <meta charset="utf-8">
+        <title>Ares Dashboard</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0">
+        
+        <!-- Favicons -->
+        <link rel="shortcut icon" href="./assets/img/favicon.png">
+        <link rel="icon" type="image/png" href="./assets/img/favicon.png" sizes="32x32">
+        
+        <!-- Web fonts -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:200,300,400,600,700&Open+Sans:300,400,600,700">
+        
+        <!-- Tailwind CSS -->
+        <link rel="stylesheet" href="dist/output.css">
+        <!-- Ares CSS -->
+        <link rel="stylesheet" href="dist/assets/css/ares.css">
+    </head>
+    <body class="h-full text-crystal font-open text-sm bg-ares bg-cover bg-fixed bg-no-repeat">
+        <!-- Page Container -->
+        <div id="page-container" class="min-w-[320px] before:fixed before:inset-0 before:content-[''] before:-z-10 before:bg-black/70">
+            <!-- Header -->
+            <header class="p-4 border-b border-white/[0.07]">
+                <div class="text-right float-right hidden sm:block">
+                    <div class="text-crystal/75 font-light">RED_SNOWGOOSE_1</div>
+                    <div class="text-success animate-infinite-pulse float-right">[LIVE]</div>
+                </div>
+                <h1 class="text-base font-raleway font-extralight">
+                    <span class="text-crystal/75">//</span>
+                    <a href="index.html" class="font-light hover:text-white transition-colors">
+                        ESP_COP_DASHBOARD
+                    </a>
+                </h1>
+            </header>
 
-  <div class="container">
-    <h2>Receiver Channels</h2>
-    <pre id="receiver">Waiting for data...</pre>
+            <!-- Main Content -->
+            <main class="p-4">
+                <!-- Columns -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    <!-- IMU Data -->
+                    <div class="bg-black/40 rounded p-4">
+                        <h2 class="text-base font-raleway mb-6">IMU_RAW_DATA</h2>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-x-8">
+                                <div>
+                                    <div class="text-white/70">ROLL</div>
+                                    <div class="text-success" id="ROLL">PENDING</div>
+                                </div>
+                                <div>
+                                    <div class="text-white/70">ROLL Velocity</div>
+                                    <div class="text-success" id="ROLLVEL">PENDING</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-x-8">
+                                <div>
+                                    <div class="text-white/70">PITCH</div>
+                                    <div class="text-success" id="PITCH">PENDING</div>
+                                </div>
+                                <div>
+                                    <div class="text-white/70">PITCH Velocity</div>
+                                    <div class="text-success" id="PITCHVEL">PENDING</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-x-8">
+                                <div>
+                                    <div class="text-white/70">YAW</div>
+                                    <div class="text-success" id="YAW">PENDING</div>
+                                </div>
+                                <div>
+                                    <div class="text-white/70">YAW Velocity</div>
+                                    <div class="text-success" id="YAWVEL">PENDING</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <h2>IMU Data</h2>
-    <pre id="imu">Waiting for data...</pre>
+                    <!-- Center Speed Indicator -->
+                    <div class="lg:col-start-2 overflow-hidden mb-8">
+                        <div class="circles relative h-[400px] mb-12">
+                            <!-- Base Circles -->
+                            <div class="visibility-hidden" data-toggle="appear" data-class="animated fadeIn">
+                                <span class="circle circle-0"></span>
+                            </div>
+                            <div class="visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="100">
+                                <span class="circle circle-1"></span>
+                            </div>
+                            <div class="visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="200">
+                                <span class="circle circle-2"></span>
+                            </div>
+                            <div class="visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="300">
+                                <span class="circle circle-3"></span>
+                            </div>
+                            <div class="visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="400">
+                                <span class="circle circle-4"></span>
+                            </div>
+                            <div class="visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="500">
+                                <span class="circle circle-5"></span>
+                            </div>
+                            <div class="visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="600">
+                                <span class="circle circle-6"></span>
+                            </div>
+                            
+                            <!-- Overlay Elements -->
+                            <div class="visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="800">
+                                <span class="circle circle-over-1 hidden-xs">
+                                    <span data-toggle="countTo" data-to="798" data-speed="100000">0</span>
+                                </span>
+                                <span class="circle circle-over-2 hidden-xs"></span>
+                                <span class="circle circle-over-3 hidden-xs"></span>
+                            </div>
+                            
+                            <!-- Center Speed Display -->
+                            <span class="circle circles-main-content visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="100">
+                                <span data-toggle="countTo" data-to="16540" data-speed="60000">0</span><br>
+                                <span class="text-crystal">km/h</span>
+                            </span>
+                        </div>
+                    </div>
 
-    <h2>PID Output</h2>
-    <pre id="pid">Waiting for data...</pre>
+                    <!-- Environment Data -->
+                    <div class="bg-black/40 rounded p-4">
+                        <h2 class="text-base font-raleway mb-6">Environment</h2>
+                        <div class="space-y-8">
+                            <div class="flex items-center gap-6">
+                                <div class="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center">
+                                    <span class="text-sm">PSI</span>
+                                </div>
+                                <div>
+                                    <div class="text-white/70 uppercase">PRESSURE</div>
+                                    <div class="text-2xl font-light">15.65</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center">
+                                    <span class="text-sm">%</span>
+                                </div>
+                                <div>
+                                    <div class="text-white/70 uppercase">OXYGEN</div>
+                                    <div class="text-2xl font-light">29.15</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-6">
+                                <div class="w-14 h-14 rounded-full border border-white/20 flex items-center justify-center">
+                                    <span class="text-sm">C°</span>
+                                </div>
+                                <div>
+                                    <div class="text-white/70 uppercase">TEMPERATURE</div>
+                                    <div class="text-2xl font-light">5.3</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <h2>Motor Values</h2>
-    <pre id="motors">Waiting for data...</pre>
-  </div>
+                    <!-- Communications -->
+                    <div class="bg-black/40 rounded p-4">
+                        <h2 class="text-base font-raleway mb-6">COMMUNICATIONS</h2>
+                        <div class="space-y-6">
+                            <div>
+                                <div class="text-white/70 mb-2">X: 95</div>
+                                <div class="h-1.5 bg-white/10">
+                                    <div class="h-full w-[95%] bg-sf-link"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-white/70 mb-2">Y: 49</div>
+                                <div class="h-1.5 bg-white/10">
+                                    <div class="h-full w-[49%] bg-sf-link"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-white/70 mb-2">Z: 59</div>
+                                <div class="h-1.5 bg-white/10">
+                                    <div class="h-full w-[59%] bg-sf-link"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-  <script src="renderer.js"></script>
-</body>
+                <!-- Control Buttons -->
+                <div class="grid grid-cols-2 gap-4 mt-6">
+                    <button class="bg-black/40 hover:bg-black/60 text-crystal py-3 px-6 transition-colors">
+                        SEND_HOME
+                    </button>
+                    <button class="bg-black/40 hover:bg-black/60 text-crystal py-3 px-6 transition-colors">
+                        MISSION_PLANNING
+                    </button>
+                    <button class="bg-black/40 hover:bg-black/60 text-crystal py-3 px-6 transition-colors">
+                        FPV
+                    </button>
+                    <button class="bg-black/40 hover:bg-black/60 text-crystal py-3 px-6 transition-colors">
+                        AUTO_PILOT
+                    </button>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="p-4 text-center text-sm text-white/50">
+                2020 Modified by ilyas121 - 2016 &copy; Crafted with <span class="text-red-500">&hearts;</span> by 
+                <a href="https://pixelcave.com/" class="text-sf-link hover:text-white transition-colors">pixelcave</a>
+            </footer>
+        </div>
+
+        <!-- Scripts -->
+        <script src="dist/assets/js/core/jquery.min.js"></script>
+        <script src="dist/assets/js/plugins/jquery.appear.min.js"></script>
+        <script src="dist/assets/js/plugins/jquery.countTo.min.js"></script>
+        <script src="dist/assets/js/ares.js"></script>
+        <script>
+        jQuery(function(){
+            // Init page helpers (Appear + CountTo plugins)
+            Ares.initHelpers(['appear', 'appear-countTo']);
+        });
+        </script>
+    </body>
 </html>
