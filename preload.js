@@ -27,3 +27,9 @@ contextBridge.exposeInMainWorld("telemetryAPI", {
     };
   }
 });
+
+// Expose environment information safely to the renderer process
+contextBridge.exposeInMainWorld('env', {
+  isDevelopment: process.env.NODE_ENV === 'development',
+  baseUrl: process.env.ELECTRON_START_URL || '.'
+});

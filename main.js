@@ -1,27 +1,24 @@
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
+const { app, BrowserWindow } = require('electron');
 
-app.whenReady().then(() => {
-  const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+function createWindow() {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 800,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js")
+      nodeIntegration: false,
+      contextIsolation: true,
+      preload: require('path').join(__dirname, 'preload.js')
     }
   });
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  win.loadURL('http://localhost:8080');
+  win.webContents.openDevTools();
+}
 
-  // Load the index.html of the app.
-  mainWindow.loadFile("index.html");
+app.whenReady().then(createWindow);
 
-  // Open the window in fullscreen
-  mainWindow.setFullScreen(true);
-});
-
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
     app.quit();
   }
 });

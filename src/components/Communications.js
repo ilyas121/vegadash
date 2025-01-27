@@ -1,33 +1,34 @@
 import React from 'react';
-import useCountTo from '../hooks/useCountTo';
+import { useWebSocket } from '../context/WebSocketContext';
 
 function Communications() {
-    const xCount = useCountTo(95, 4000);
-    const yCount = useCountTo(49, 4000);
-    const zCount = useCountTo(59, 4000);
-    const vCount = useCountTo(60, 4000);
+    const { data } = useWebSocket(); // Access WebSocket data
+
+    // Get motor values from WebSocket data
+    const motorValues = data?.MotorValues || [0, 0, 0, 0]; // Default to an array of zeros if data is not available
+    const [motor1, motor2, motor3, motor4] = motorValues; // Destructure motor values
 
     return (
         <div className="block">
             <div className="block-header overflow-hidden">
-                <h2 className="block-title visibility-hidden" data-toggle="appear" data-class="animated fadeInDown">COMMUNICATIONS</h2>
+                <h2 className="block-title animated fadeInDown">MOTOR POWER 3 </h2>
             </div>
             <div className="block-content block-content-full overflow-hidden">
-                <div className="font-w600 text-white-op push-5">X: {xCount}</div>
+                <div className="font-w600 text-white-op push-5">MOTOR 1: {motor1}</div>
                 <div className="progress">
-                    <div className="progress-bar progress-bar-sf progress-bar-striped active" role="progressbar" aria-valuenow={xCount} aria-valuemin="0" aria-valuemax="100" style={{ width: `${xCount}%` }}></div>
+                    <div className="progress-bar progress-bar-sf progress-bar-striped active" role="progressbar" aria-valuenow={motor1} aria-valuemin="0" aria-valuemax="100" style={{ width: `${motor1}%` }}></div>
                 </div>
-                <div className="font-w600 text-white-op push-5">Y: {yCount}</div>
+                <div className="font-w600 text-white-op push-5">MOTOR 2: {motor2}</div>
                 <div className="progress">
-                    <div className="progress-bar progress-bar-sf progress-bar-striped active" role="progressbar" aria-valuenow={yCount} aria-valuemin="0" aria-valuemax="100" style={{ width: `${yCount}%` }}></div>
+                    <div className="progress-bar progress-bar-sf progress-bar-striped active" role="progressbar" aria-valuenow={motor2} aria-valuemin="0" aria-valuemax="100" style={{ width: `${motor2}%` }}></div>
                 </div>
-                <div className="font-w600 text-white-op push-5">Z: {zCount}</div>
+                <div className="font-w600 text-white-op push-5">MOTOR 3: {motor3}</div>
                 <div className="progress">
-                    <div className="progress-bar progress-bar-sf progress-bar-striped active" role="progressbar" aria-valuenow={zCount} aria-valuemin="0" aria-valuemax="100" style={{ width: `${zCount}%` }}></div>
+                    <div className="progress-bar progress-bar-sf progress-bar-striped active" role="progressbar" aria-valuenow={motor3} aria-valuemin="0" aria-valuemax="100" style={{ width: `${motor3}%` }}></div>
                 </div>
-                <div className="font-w600 text-white-op push-5">V: +{vCount}</div>
+                <div className="font-w600 text-white-op push-5">MOTOR 4: +{motor4}</div>
                 <div className="progress">
-                    <div className="progress-bar progress-bar-sf progress-bar-striped active" role="progressbar" aria-valuenow={vCount} aria-valuemin="0" aria-valuemax="100" style={{ width: `${vCount}%` }}></div>
+                    <div className="progress-bar progress-bar-sf progress-bar-striped active" role="progressbar" aria-valuenow={motor4} aria-valuemin="0" aria-valuemax="100" style={{ width: `${motor4}%` }}></div>
                 </div>
             </div>
         </div>

@@ -104,8 +104,8 @@ a.link-sf:active:before {
     text-align: left;
     font-weight: 600;
     font-size: 14px;
-    color: rgba(255, 255, 255, .75);
-    border: 2px solid rgba(255, 255, 255, .25);
+    color: rgba(38, 149, 239, 0.75);
+    border: 2px solid rgba(38, 149, 239, 0.75);
     border-left-width: 4px;
     border-right-width: 4px;
     background: transparent;
@@ -113,15 +113,15 @@ a.link-sf:active:before {
 
 .btn.btn-sf:hover,
 .btn.btn-sf:focus {
-    color: rgba(255, 255, 255, 1);
-    border-color: rgba(255, 255, 255, 1);
+    color: rgb(23, 11, 86);
+    border-color: rgb(23, 11, 86);
     outline: 0;
 }
 
 .btn.btn-sf:active {
-    color: #fff;
-    border-color: #fff;
-    background: rgba(255, 255, 255, .15);
+    color: #fe0404;
+    border-color: #f80707;
+    background: rgba(23, 11, 86);
 }
 
 .progress {
@@ -150,7 +150,7 @@ a.link-sf:active:before {
 }
 
 #page-container.modern-sf:before {
-    background-color: rgba(0, 22, 41, .75);
+    background-color: rgba(0, 22, 41, 0.482);
 }
 
 #page-container.vintage-sf:before {

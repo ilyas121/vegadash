@@ -1,33 +1,36 @@
-import React, { useRef } from 'react';
-import useVisibility from '../hooks/useVisibility';
+import React from 'react';
+import { useWebSocket } from '../context/WebSocketContext';
 
 function AnimatedCircles() {
-    const circlesRef = useRef();
-    const isVisible = useVisibility(circlesRef);
+    const { data } = useWebSocket(); // Access WebSocket data
+
+    // Get the first receiver value
+    const receiverValue = data?.ReceiverValues[0] || 0;
 
     return (
-        <div className="col-lg-6 col-lg-push-3 overflow-hidden push-20" ref={circlesRef}>
+        <div className="col-lg-6 col-lg-push-3 overflow-hidden push-20">
             <div className="circles push-50">
                 {[...Array(7)].map((_, index) => (
-                    <div key={index} className={`circle circle-${index} ${isVisible ? 'animated fadeIn' : 'visibility-hidden'}`}>
+                    <div key={index} className={`circle circle-${index} animated fadeIn`}>
                         <span></span>
                     </div>
                 ))}
-                <div className={`visibility-hidden ${isVisible ? 'animated fadeIn' : ''}`} data-toggle="appear" data-class="animated fadeIn" data-timeout="800">
-                    <span className="circle circle-over-1 hidden-xs">
-                        <span data-toggle="countTo" data-to="798" data-speed="100000"></span>
+                <div className="animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="800">
+                    <span className="circle circle-over-1">
+                        <span data-toggle="countTo" data-to={receiverValue} data-speed="100000" className="text-success">{receiverValue}</span>
                     </span>
-                    <span className="circle circle-over-2 hidden-xs"></span>
-                    <span className="circle circle-over-3 hidden-xs"></span>
+                    <span className="circle circle-over-2"></span>
+                    <span className="circle circle-over-3"></span>
                 </div>
-                <span className={`circle circles-main-content ${isVisible ? 'animated fadeIn' : 'visibility-hidden'}`}>
-                    <span data-toggle="countTo" data-to="16540" data-speed="60000"></span><br />
-                    <span className="text-crystal">km/h</span>
+                <span className="circle circles-main-content">
+                    {/* <span data-toggle="countTo" data-to="16540" data-speed="60000"></span><br /> */}
+                        <span data-toggle="countTo" data-to={receiverValue} data-speed="100000">{receiverValue}</span><br />
+                    <span className="text-crystal">THROTTLE PERCENTAGE</span>
                 </span>
             </div>
             <div className="row">
-                {['SEND_HOME', 'MISSION_PLANNING', 'FPV', 'AUTO_PILOT'].map((label, index) => (
-                    <div className={`col-xs-6 ${isVisible ? 'animated fadeIn' : 'visibility-hidden'}`} key={label}>
+                {['HOMEPAGE', 'CONTROL PANEL', 'FLASH DRONE', 'MISSION CONTROL'].map((label, index) => (
+                    <div className="col-xs-6" key={label}>
                         <button className="btn btn-xl btn-block btn-sf push-10">{label}</button>
                     </div>
                 ))}

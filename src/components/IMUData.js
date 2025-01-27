@@ -1,30 +1,40 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { useWebSocket } from '../context/WebSocketContext';
 
 function IMUData() {
+    const imuREF = useRef();
+    const { data } = useWebSocket(); // Access WebSocket data
+
     return (
-        <div className="block">
+        <div className="block" ref={imuREF}>
             <div className="block-header overflow-hidden">
-                <h2 className="block-title disabled-visibility-hidden" data-toggle="appear" data-class="animated fadeInDown">IMU_RAW_DATA</h2>
+                <h2 className="block-title animated fadeInDown">IMU_RAW_DATA</h2>
             </div>
-            <div className="block-content overflow-hidden">
+            <div className="block-content">
                 <div className="row items-push">
-                    <div className="col-xs-6 disabled-visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="300">
-                        <div className="font-s24 font-w300 text-white-op">ROLL [<span className="text-success">40</span>]</div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="100">
+                        <div className="font-s12 text-white-op">ROLL</div>
+                        <div className="font-s18 text-success">{data?.IMU[0] || 0}</div>
                     </div>
-                    <div className="col-xs-6 disabled-visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="500">
-                        <div className="font-s24 font-w300 text-white-op">ω_ROLL [<span className="text-success">60</span>]</div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="300">
+                        <div className="font-s12 text-white-op">PITCH</div>
+                        <div className="font-s18 text-success">{data?.IMU[1] || 0}</div>
                     </div>
-                    <div className="col-xs-6 disabled-visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="700">
-                        <div className="font-s24 font-w300 text-white-op">PITCH [<span className="text-success">80</span>]</div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="500">
+                        <div className="font-s12 text-white-op">YAW</div>
+                        <div className="font-s18 text-success">{data?.IMU[2] || 0}</div>
                     </div>
-                    <div className="col-xs-6 disabled-visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="900">
-                        <div className="font-s24 font-w300 text-white-op">ω_PITCH [<span className="text-success">90</span>]</div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="700">
+                        <div className="font-s12 text-white-op">ROLL VELOCITY</div>
+                        <div className="font-s18 text-success">{data?.IMU[3] || 0}</div>
                     </div>
-                    <div className="col-xs-6 disabled-visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="1100">
-                        <div className="font-s24 font-w300 text-white-op">YAW [<span className="text-success">20</span>]</div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="900">
+                        <div className="font-s12 text-white-op">PITCH VELOCITY</div>
+                        <div className="font-s18 text-success">{data?.IMU[4] || 0}</div>
                     </div>
-                    <div className="col-xs-6 disabled-visibility-hidden" data-toggle="appear" data-class="animated fadeIn" data-timeout="1300">
-                        <div className="font-s24 font-w300 text-white-op">ω_YAW [<span className="text-success">30</span>]</div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="1100">
+                        <div className="font-s12 text-white-op">YAW VELOCITY</div>
+                        <div className="font-s18 text-success">{data?.IMU[5] || 0}</div>
                     </div>
                 </div>
             </div>

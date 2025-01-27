@@ -8,7 +8,7 @@ import GPSDataStream from './GPSDataStream';
 
 function MainContent() {
     return (
-        <main id="page-main">
+        <main id="page-main" className="modern-sf">
             <div className="row">
                 <AnimatedCircles />
                 <div className="col-sm-6 col-lg-3 col-lg-pull-6">
