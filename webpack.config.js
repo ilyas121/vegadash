@@ -1,63 +1,60 @@
 const path = require('path');
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 
-module.exports = (env, argv) => {
-  const isDevelopment = argv.mode === 'development';
-  const publicPath = isDevelopment ? 'http://localhost:8080/dist/' : './dist/';
-
-  return {
+module.exports = {
     entry: './src/index.js',
     output: {
-      path: path.resolve(__dirname, 'dist'),
-      filename: 'bundle.js',
-      publicPath: publicPath
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'bundle.js',
+        publicPath: 'http://localhost:8080/'
     },
     module: {
-      rules: [
-        {
-          test: /\.jsx?$/,
-          exclude: /node_modules/,
-          use: 'babel-loader'
-        },
-        {
-          test: /\.css$/,
-          use: [
-            'style-loader',
+        rules: [
             {
-              loader: 'css-loader',
-              options: {
-                url: true
-              }
+                test: /\.jsx?$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env', '@babel/preset-react']
+                    }
+                }
+            },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader']
+            },
+            {
+                test: /\.(png|jpe?g|gif|svg)$/i,
+                type: 'asset/resource',
+                generator: {
+                    filename: 'img/[name][ext]'
+                }
             }
-          ]
-        },
-        {
-          test: /\.(png|jpe?g|gif|svg)$/i,
-          type: 'asset/resource',
-          generator: {
-            filename: 'img/[name][ext]',
-            publicPath: publicPath
-          }
-        }
-      ]
+        ]
     },
     resolve: {
-      extensions: ['.js', '.jsx']
+        extensions: ['.js', '.jsx']
     },
     devServer: {
-      hot: true,
-      port: 8080,
-      static: {
-        directory: path.join(__dirname, 'dist'),
-        publicPath: '/dist'
-      },
-      headers: {
-        "Access-Control-Allow-Origin": "*"
-      }
+        static: {
+            directory: path.join(__dirname, 'dist'),
+            publicPath: '/'
+        },
+        hot: true,
+        port: 8080,
+        historyApiFallback: true
     },
     plugins: [
-      new webpack.HotModuleReplacementPlugin()
-    ],
-    target: 'web'
-  };
+        new webpack.HotModuleReplacementPlugin(),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: 'src/img',
+                    to: 'img'
+                }
+            ]
+        })
+    ]
 };

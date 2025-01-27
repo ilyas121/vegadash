@@ -32,9 +32,11 @@ function createWindow() {
   }
 
   if (isDev) {
+    console.log('Loading development URL');
     win.loadURL('http://localhost:8080');
     win.webContents.openDevTools();
   } else {
+    console.log('Loading production file');
     win.loadFile('index.html');
   }
 }
