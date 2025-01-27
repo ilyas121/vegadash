@@ -3,6 +3,7 @@ import { Canvas, useLoader } from '@react-three/fiber';
 import { OrbitControls, Grid, Environment, PerspectiveCamera } from '@react-three/drei';
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
 import * as THREE from 'three';
+import { useWebSocket } from '../context/WebSocketContext';
 
 // Separate component for error boundary
 function ErrorBoundary({ children }) {
@@ -122,8 +123,13 @@ function LoadingFallback() {
 }
 
 function DroneModel() {
+    const { data } = useWebSocket();
     const containerRef = useRef(null);
+    const modelGroupRef = useRef();
     const [dimensions, setDimensions] = useState({ width: '100%', height: '100%' });
+
+    // Convert degrees to radians
+    const toRadians = (degrees) => degrees * (Math.PI / 180);
 
     useEffect(() => {
         const updateDimensions = () => {
@@ -142,11 +148,30 @@ function DroneModel() {
         return () => window.removeEventListener('resize', updateDimensions);
     }, []);
 
+    // Update model rotation based on IMU data
+    useEffect(() => {
+        if (modelGroupRef.current && data?.IMU) {
+            const [roll, pitch, yaw] = data.IMU.slice(0, 3);
+            
+            // Create a new quaternion for smooth rotation
+            const quaternion = new THREE.Quaternion();
+            const euler = new THREE.Euler(
+                toRadians(pitch),  // X-axis (pitch)
+                toRadians(yaw),    // Y-axis (yaw)
+                toRadians(-roll),  // Z-axis (roll) - negative for correct direction
+                'XYZ'             // Rotation order
+            );
+            
+            quaternion.setFromEuler(euler);
+            modelGroupRef.current.setRotationFromQuaternion(quaternion);
+        }
+    }, [data?.IMU]);
+
     return (
         <ErrorBoundary>
             <div style={{ 
                 position: 'relative',
-                height: 'calc(100vh - 200px)', // Subtract footer height + some padding
+                height: 'calc(100vh - 200px)',
                 display: 'flex',
                 flexDirection: 'column'
             }}>
@@ -154,7 +179,7 @@ function DroneModel() {
                     ref={containerRef} 
                     style={{ 
                         flex: 1,
-                        minHeight: 0 // Important for flex child
+                        minHeight: 0
                     }}
                 >
                     <Canvas shadows>
@@ -165,16 +190,12 @@ function DroneModel() {
                             near={0.1}
                             far={1000}
                         />
-                        
                         <Suspense fallback={<LoadingFallback />}>
-                            {/* Improved lighting */}
                             <ambientLight intensity={0.5} />
                             <directionalLight
                                 position={[5, 5, 5]}
                                 intensity={1}
                                 castShadow
-                                shadow-mapSize-width={1024}
-                                shadow-mapSize-height={1024}
                             />
                             <spotLight
                                 position={[-5, 5, -5]}
@@ -183,14 +204,8 @@ function DroneModel() {
                                 intensity={0.5}
                                 castShadow
                             />
-                            
-                            {/* Environment for better reflections */}
                             <Environment preset="city" />
-                            
-                            {/* Improved grid */}
                             <Grid
-                                args={[20, 20]}
-                                position={[0, -0.01, 0]}
                                 cellSize={1}
                                 cellThickness={0.5}
                                 cellColor="#ff5555"
@@ -202,13 +217,13 @@ function DroneModel() {
                                 followCamera={false}
                                 infiniteGrid={true}
                             />
-                            
-                            <STLModel />
-                            
+                            <group ref={modelGroupRef}>
+                                <STLModel />
+                            </group>
                             <OrbitControls 
-                                enablePan={true}
+                                enablePan={false}
                                 enableZoom={true}
-                                enableRotate={true}
+                                enableRotate={false}
                                 minDistance={2}
                                 maxDistance={20}
                                 minPolarAngle={0}
