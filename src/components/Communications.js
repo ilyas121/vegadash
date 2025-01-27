@@ -11,7 +11,7 @@ function Communications() {
     return (
         <div className="block">
             <div className="block-header overflow-hidden">
-                <h2 className="block-title animated fadeInDown">MOTOR POWER 3 </h2>
+                <h2 className="block-title animated fadeInDown">MOTOR POWER 4 </h2>
             </div>
             <div className="block-content block-content-full overflow-hidden">
                 <div className="font-w600 text-white-op push-5">MOTOR 1: {motor1}</div>

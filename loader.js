@@ -41,13 +41,13 @@ function loadScript(src) {
 window.addEventListener('DOMContentLoaded', async () => {
     console.log('DOM Content Loaded. Base URL:', window.env.baseUrl);
     try {
-        // Load CSS files
-        await Promise.all([
-            loadCSS('bootstrap.min.css'),
-            loadCSS('animate.min.css'),
-            loadCSS('ares.css')
-        ]);
-        console.log('All CSS files loaded successfully');
+        // // Load CSS files
+        // await Promise.all([
+        //     loadCSS('bootstrap.min.css'),
+        //     loadCSS('animate.min.css'),
+        //     loadCSS('ares.css')
+        // ]);
+        // console.log('All CSS files loaded successfully');
 
         // Load the bundle
         await loadScript(`${window.env.baseUrl}/bundle.js`);

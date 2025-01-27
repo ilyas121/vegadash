@@ -1,4 +1,6 @@
 const { app, BrowserWindow } = require('electron');
+const path = require('path');
+const isDev = process.env.NODE_ENV === 'development';
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -7,12 +9,16 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: require('path').join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js')
     }
   });
 
-  win.loadURL('http://localhost:8080');
-  win.webContents.openDevTools();
+  if (isDev) {
+    win.loadURL('http://localhost:8080');
+    win.webContents.openDevTools();
+  } else {
+    win.loadFile('index.html');
+  }
 }
 
 app.whenReady().then(createWindow);
@@ -20,5 +26,11 @@ app.whenReady().then(createWindow);
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
   }
 });

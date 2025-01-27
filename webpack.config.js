@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: 'http://localhost:8080/dist/'
   },
   module: {
     rules: [
@@ -17,7 +17,23 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              url: true
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'img/[name][ext]',
+          publicPath: 'http://localhost:8080/dist/'
+        }
       }
     ]
   },
@@ -28,12 +44,11 @@ module.exports = {
     hot: true,
     port: 8080,
     static: {
-      directory: path.join(__dirname, '.'),
-      publicPath: '/',
-      serveIndex: true
+      directory: path.join(__dirname, 'dist'),
+      publicPath: '/dist'
     },
-    devMiddleware: {
-      publicPath: '/'
+    headers: {
+      "Access-Control-Allow-Origin": "*"
     }
   },
   plugins: [
