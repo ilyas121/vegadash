@@ -104,8 +104,8 @@ a.link-sf:active:before {
     text-align: left;
     font-weight: 600;
     font-size: 14px;
-    color: rgba(239, 125, 38, 0.75);
-    border: 2px solid rgba(239, 189, 38, 0.75);
+    color: rgba(10, 80, 151, 0.75);
+    border: 2px solid rgba(10, 80, 151, 0.75);
     border-left-width: 4px;
     border-right-width: 4px;
     background: transparent;
@@ -119,8 +119,8 @@ a.link-sf:active:before {
 }
 
 .btn.btn-sf:active {
-    color: #fe0404;
-    border-color: #f80707;
+    color: #2e04fe;
+    border-color: #3707f8;
     background: rgba(23, 11, 86);
 }
 
@@ -469,4 +469,12 @@ a.link-sf:active:before {
 
 .btn-xl {
     font-size: 1.2em;
+}
+
+.col-lg-6.col-lg-push-3 {
+    min-width: 600px;
+    overflow: visible;
+    margin: 0 auto;
+    float: none;
+    left: auto;
 }
