@@ -2,7 +2,7 @@ import React from 'react';
 import AnimatedCircles from './AnimatedCircles';
 import IMUData from './IMUData';
 import Communications from './Communications';
-import ControlStream from './GPSDataStream';
+import ControlStream from './ControlStream';
 import ReceiverValues from './ReceiverValues';
 
 function MainContent() {

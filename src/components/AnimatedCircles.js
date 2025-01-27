@@ -28,13 +28,6 @@ function AnimatedCircles() {
                     <span className="text-crystal">THROTTLE PERCENTAGE</span>
                 </span>
             </div>
-            <div className="row">
-                {['HOMEPAGE', 'CONTROL PANEL', 'FLASH DRONE', 'MISSION CONTROL'].map((label, index) => (
-                    <div className="col-xs-6" key={label}>
-                        <button className="btn btn-xl btn-block btn-sf push-10">{label}</button>
-                    </div>
-                ))}
-            </div>
         </div>
     );
 }

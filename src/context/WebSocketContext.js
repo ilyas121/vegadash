@@ -1,47 +1,44 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useRef, useState, useEffect } from 'react';
 
-const WebSocketContext = createContext();
-
-export const useWebSocket = () => {
-    return useContext(WebSocketContext);
-};
+const WebSocketContext = createContext({
+    data: null,
+    sendCommand: () => {}
+});
 
 export const WebSocketProvider = ({ children }) => {
+    const ws = useRef(null);
     const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
-    const [isConnected, setIsConnected] = useState(false);
+
+    const sendCommand = (command) => {
+        if (ws.current && ws.current.readyState === WebSocket.OPEN) {
+            ws.current.send(JSON.stringify(command));
+        }
+    };
 
     useEffect(() => {
-        const socket = new WebSocket('ws://localhost:9090'); // Connect to your WebSocket server
+        ws.current = new WebSocket('ws://localhost:9090');
 
-        socket.onopen = () => {
-            console.log('WebSocket connection established');
-            setIsConnected(true);
-        };
-
-        socket.onmessage = (event) => {
-            const parsedData = JSON.parse(event.data);
-            setData(parsedData);
-        };
-
-        socket.onerror = (event) => {
-            console.error('WebSocket error:', event);
-            setError(event);
-        };
-
-        socket.onclose = () => {
-            console.log('WebSocket connection closed');
-            setIsConnected(false);
+        ws.current.onmessage = (event) => {
+            try {
+                const data = JSON.parse(event.data);
+                setData(data);
+            } catch (error) {
+                console.error('WebSocket message error:', error);
+            }
         };
 
         return () => {
-            socket.close();
+            if (ws.current) {
+                ws.current.close();
+            }
         };
     }, []);
 
     return (
-        <WebSocketContext.Provider value={{ data, error, isConnected }}>
+        <WebSocketContext.Provider value={{ data, sendCommand }}>
             {children}
         </WebSocketContext.Provider>
     );
-}; 
+};
+
+export const useWebSocket = () => useContext(WebSocketContext); 
