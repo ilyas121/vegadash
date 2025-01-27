@@ -81,17 +81,17 @@ function STLModel() {
                 const box = geometry.boundingBox;
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 3 / maxDim;
+                const scale = 2.5 / maxDim;
                 meshRef.current.scale.setScalar(scale);
                 
                 // Rotate to upright position
                 meshRef.current.rotation.x = -Math.PI / 2;
                 
-                // Manual position adjustment to center the ship
+                // Keep the offset for proper rotation point
                 meshRef.current.position.set(
                     0,      // X offset
-                    1,   // Y offset (up/down)
-                    0    // Z offset (forward/back)
+                    1,   // Y offset
+                    0    // Z offset
                 );
             } catch (err) {
                 console.error('Error processing geometry:', err);
@@ -220,44 +220,21 @@ function DroneModel() {
     const { data } = useWebSocket();
     const containerRef = useRef(null);
     const modelGroupRef = useRef();
-    const cameraRef = useRef();
     const [dimensions, setDimensions] = useState({ width: '100%', height: '100%' });
 
     // Convert degrees to radians
     const toRadians = (degrees) => degrees * (Math.PI / 180);
 
-    // Function to adjust camera to fit model
-    useEffect(() => {
-        if (modelGroupRef.current && cameraRef.current) {
-            // Create a bounding box for the entire group
-            const box = new THREE.Box3().setFromObject(modelGroupRef.current);
-            const size = box.getSize(new THREE.Vector3());
-            const center = box.getCenter(new THREE.Vector3());
-
-            // Calculate the distance needed for the camera
-            const maxDim = Math.max(size.x, size.y, size.z);
-            const fov = cameraRef.current.fov * (Math.PI / 180);
-            const distance = (maxDim * 2.5) / Math.tan(fov / 2);
-
-            // Update camera position
-            cameraRef.current.position.set(
-                distance * 0.7,  // X
-                distance * 0.7,  // Y
-                distance * 0.7   // Z
-            );
-            cameraRef.current.lookAt(center);
-            cameraRef.current.updateProjectionMatrix();
-        }
-    }, []);
-
     useEffect(() => {
         const updateDimensions = () => {
             if (containerRef.current) {
-                const { width } = containerRef.current.getBoundingClientRect();
-                setDimensions({
-                    width: '100%',
-                    height: '100%'
-                });
+                const parent = containerRef.current.parentElement;
+                if (parent) {
+                    setDimensions({
+                        width: parent.clientWidth,
+                        height: parent.clientHeight
+                    });
+                }
             }
         };
 
@@ -271,16 +248,13 @@ function DroneModel() {
     useEffect(() => {
         if (modelGroupRef.current && data?.IMU) {
             const [roll, pitch, yaw] = data.IMU.slice(0, 3);
-            
-            // Create a new quaternion for smooth rotation
             const quaternion = new THREE.Quaternion();
             const euler = new THREE.Euler(
-                toRadians(pitch),  // X-axis (pitch)
-                toRadians(yaw),    // Y-axis (yaw)
-                toRadians(-roll),  // Z-axis (roll) - negative for correct direction
-                'XYZ'             // Rotation order
+                toRadians(pitch),
+                toRadians(yaw),
+                toRadians(-roll),
+                'XYZ'
             );
-            
             quaternion.setFromEuler(euler);
             modelGroupRef.current.setRotationFromQuaternion(quaternion);
         }
@@ -288,68 +262,49 @@ function DroneModel() {
 
     return (
         <ErrorBoundary>
-            <div style={{ 
-                position: 'relative',
+            <div ref={containerRef} style={{ 
+                width: '100%',
                 height: '100%',
-                display: 'flex',
-                flexDirection: 'column'
+                position: 'absolute',
+                top: 0,
+                left: 0
             }}>
-                <div 
-                    ref={containerRef} 
-                    style={{ 
-                        flex: 1,
-                        minHeight: 0
+                <Canvas
+                    style={{ background: 'transparent' }}
+                    camera={{
+                        fov: 45,
+                        position: [3, 3.5, 3],
+                        near: 0.1,
+                        far: 1000,
                     }}
                 >
-                    <Canvas shadows>
-                        <PerspectiveCamera 
-                            ref={cameraRef}
-                            makeDefault 
-                            position={[5, 5, 5]}  // Initial position, will be adjusted
-                            fov={45}
-                            near={0.1}
-                            far={1000}
+                    <OrbitControls
+                        enableZoom={false}
+                        enablePan={false}
+                        enableRotate={false}
+                        target={[0, 1.5, 0]}
+                    />
+                    <Suspense fallback={<LoadingFallback />}>
+                        <ambientLight intensity={0.5} />
+                        <directionalLight
+                            position={[5, 5, 5]}
+                            intensity={1}
+                            castShadow
                         />
-                        <OrbitControls
-                            enableZoom={false}
-                            enablePan={false}
-                            enableRotate={false}
-                            target={[0, -1.5, 0]}  // Updated to match model center
+                        <spotLight
+                            position={[-5, 5, -5]}
+                            angle={0.3}
+                            penumbra={1}
+                            intensity={0.5}
+                            castShadow
                         />
-                        <Suspense fallback={<LoadingFallback />}>
-                            <ambientLight intensity={0.5} />
-                            <directionalLight
-                                position={[5, 5, 5]}
-                                intensity={1}
-                                castShadow
-                            />
-                            <spotLight
-                                position={[-5, 5, -5]}
-                                angle={0.3}
-                                penumbra={1}
-                                intensity={0.5}
-                                castShadow
-                            />
-                            <Environment preset="city" />
-                            <Grid
-                                cellSize={1}
-                                cellThickness={0.5}
-                                cellColor="#ff5555"
-                                sectionSize={5}
-                                sectionThickness={1}
-                                sectionColor="#ff8888"
-                                fadeDistance={30}
-                                fadeStrength={1}
-                                followCamera={false}
-                                infiniteGrid={true}
-                            />
-                            <group ref={modelGroupRef}>
-                                <RotationHelper />
-                                <STLModel />
-                            </group>
-                        </Suspense>
-                    </Canvas>
-                </div>
+                        <Environment preset="city" />
+                        <group ref={modelGroupRef} position={[0, 0.5, 0]}>
+                            <RotationHelper />
+                            <STLModel />
+                        </group>
+                    </Suspense>
+                </Canvas>
             </div>
         </ErrorBoundary>
     );
