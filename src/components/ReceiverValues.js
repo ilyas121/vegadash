@@ -1,49 +1,45 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useWebSocket } from '../context/WebSocketContext';
 
 function ReceiverValues() {
+    const receiverRef = useRef();
     const { data } = useWebSocket();
-    const rawValues = data?.ReceiverValues || Array(6).fill(0);
-    
-    // Ensure all values are numbers
-    const receiverValues = rawValues.map(val => typeof val === 'number' ? val : 0);
-    
-    const channels = [
-        { name: 'THROTTLE', value: receiverValues[0] },
-        { name: 'ROLL', value: receiverValues[1] },
-        { name: 'PITCH', value: receiverValues[2] },
-        { name: 'YAW', value: receiverValues[3] },
-        { name: 'ARM', value: receiverValues[4] },
-        { name: 'MODE', value: receiverValues[5] }
-    ];
+
+    const receiverValues = data?.ReceiverValues || [0,0,0,0,0,0];
+    const [ch1, ch2, ch3, ch4, ch5, ch6] = receiverValues;
 
     return (
-        <div className="block">
-            <div className="block-header">
-                <h2 className="block-title">RECEIVER VALUES</h2>
+        <div className="block" ref={receiverRef}>
+            <div className="block-header overflow-hidden">
+                <h2 className="block-title animated fadeInDown">RECEIVER VALUES</h2>
             </div>
             <div className="block-content">
-                {channels.map((channel, index) => {
-                    // Ensure value is a number and format it
-                    const displayValue = Number(channel.value).toFixed(2);
-                    const progressWidth = Math.min(Math.max((channel.value / 100) * 100, 0), 100);
-                    
-                    return (
-                        <div key={index} className="push-10">
-                            <div className="font-w600 text-white-op push-5">
-                                {channel.name}
-                                <span className="pull-right">{displayValue}</span>
-                            </div>
-                            <div className="progress">
-                                <div 
-                                    className="progress-bar progress-bar-sf" 
-                                    role="progressbar" 
-                                    style={{ width: `${progressWidth}%` }}
-                                ></div>
-                            </div>
-                        </div>
-                    );
-                })}
+                <div className="row items-push">
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="100">
+                        <div className="font-s12 text-white-op">CH 1</div>
+                        <div className="font-s18 text-success">{ch1 || '0.00' }</div>
+                    </div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="300">
+                        <div className="font-s12 text-white-op">CH 2</div>
+                        <div className="font-s18 text-success">{ch2 || '0.00' }</div>
+                    </div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="500">
+                        <div className="font-s12 text-white-op">CH 3</div>
+                        <div className="font-s18 text-success">{ch3 || '0.00' }</div>
+                    </div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="700">
+                        <div className="font-s12 text-white-op">CH 4</div>
+                        <div className="font-s18 text-success">{ch4 || '0.00' }</div>
+                    </div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="900">
+                        <div className="font-s12 text-white-op">CH 5</div>
+                        <div className="font-s18 text-success">{ch5 || '0.00' }</div>
+                    </div>
+                    <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="1100">
+                        <div className="font-s12 text-white-op">CH 6</div>
+                        <div className="font-s18 text-success">{ch6 || '0.00' }</div>
+                    </div>
+                </div>
             </div>
         </div>
     );

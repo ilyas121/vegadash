@@ -104,8 +104,8 @@ a.link-sf:active:before {
     text-align: left;
     font-weight: 600;
     font-size: 14px;
-    color: rgba(38, 149, 239, 0.75);
-    border: 2px solid rgba(38, 149, 239, 0.75);
+    color: rgba(239, 125, 38, 0.75);
+    border: 2px solid rgba(239, 189, 38, 0.75);
     border-left-width: 4px;
     border-right-width: 4px;
     background: transparent;
@@ -181,7 +181,7 @@ a.link-sf:active:before {
 /* Blocks */
 .block {
     margin-bottom: 20px;
-    background-color: rgba(0, 0, 0, .15);
+    background-color: rgba(0, 0, 0, 0.347);
     border-left: 4px solid rgba(255, 255, 255, .1);
 }
 
@@ -456,3 +456,17 @@ a.link-sf:active:before {
 
 .overflow-hidden { overflow: hidden; }
 .visibility-hidden { visibility: hidden; }
+
+.btn-sf {
+    padding: 15px 20px;
+    min-height: 60px;
+    white-space: normal;
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-xl {
+    font-size: 1.2em;
+}

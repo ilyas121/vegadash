@@ -2,7 +2,7 @@ import React from 'react';
 import AnimatedCircles from './AnimatedCircles';
 import IMUData from './IMUData';
 import Communications from './Communications';
-import GPSDataStream from './GPSDataStream';
+import ControlStream from './GPSDataStream';
 import ReceiverValues from './ReceiverValues';
 
 function MainContent() {
@@ -18,7 +18,7 @@ function MainContent() {
                 </div>
                 <div className="col-sm-6 col-lg-3">
                     <IMUData />
-                    <GPSDataStream />
+                    <ControlStream />
                 </div>
             </div>
         </main>
