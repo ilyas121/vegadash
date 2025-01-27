@@ -77,16 +77,22 @@ function STLModel() {
     useEffect(() => {
         if (meshRef.current && geometry) {
             try {
-                geometry.center();
                 geometry.computeBoundingBox();
                 const box = geometry.boundingBox;
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 2 / maxDim; // Increased scale
+                const scale = 3 / maxDim;
                 meshRef.current.scale.setScalar(scale);
                 
                 // Rotate to upright position
-                meshRef.current.rotation.x = -Math.PI / 2; // Rotate 90 degrees around X axis
+                meshRef.current.rotation.x = -Math.PI / 2;
+                
+                // Manual position adjustment to center the ship
+                meshRef.current.position.set(
+                    0,      // X offset
+                    1,   // Y offset (up/down)
+                    0    // Z offset (forward/back)
+                );
             } catch (err) {
                 console.error('Error processing geometry:', err);
                 setError(err);
@@ -101,12 +107,12 @@ function STLModel() {
     return (
         <mesh ref={meshRef} geometry={geometry} castShadow receiveShadow>
             <meshPhysicalMaterial 
-                color="#4080ff"
-                metalness={0.8}
-                roughness={0.2}
-                clearcoat={0.8}
-                clearcoatRoughness={0.2}
-                envMapIntensity={1}
+                color="#FF6B00"
+                metalness={0.6}
+                roughness={0.3}
+                clearcoat={1.0}
+                clearcoatRoughness={0.1}
+                envMapIntensity={1.2}
             />
         </mesh>
     );
@@ -122,14 +128,127 @@ function LoadingFallback() {
     );
 }
 
+// Add this helper component to show rotation axes and center
+function RotationHelper({ size = 2 }) {
+    return (
+        <group>
+            {/* Center point */}
+            <mesh>
+                <sphereGeometry args={[0.1]} />
+                <meshBasicMaterial color="white" />
+            </mesh>
+            
+            {/* X axis - Red (Pitch) */}
+            <line>
+                <bufferGeometry>
+                    <bufferAttribute
+                        attach="attributes-position"
+                        count={2}
+                        array={new Float32Array([0, 0, 0, size, 0, 0])}
+                        itemSize={3}
+                    />
+                </bufferGeometry>
+                <lineBasicMaterial color="red" linewidth={2} />
+            </line>
+            
+            {/* Y axis - Green (Yaw) */}
+            <line>
+                <bufferGeometry>
+                    <bufferAttribute
+                        attach="attributes-position"
+                        count={2}
+                        array={new Float32Array([0, 0, 0, 0, size, 0])}
+                        itemSize={3}
+                    />
+                </bufferGeometry>
+                <lineBasicMaterial color="green" linewidth={2} />
+            </line>
+            
+            {/* Z axis - Blue (Roll) */}
+            <line>
+                <bufferGeometry>
+                    <bufferAttribute
+                        attach="attributes-position"
+                        count={2}
+                        array={new Float32Array([0, 0, 0, 0, 0, size])}
+                        itemSize={3}
+                    />
+                </bufferGeometry>
+                <lineBasicMaterial color="blue" linewidth={2} />
+            </line>
+            
+            {/* Labels */}
+            <group position={[size + 0.2, 0, 0]}>
+                <sprite scale={[0.5, 0.5, 0.5]}>
+                    <spriteMaterial attach="material">
+                        <canvasTexture attach="map" image={createTextCanvas("Pitch (X)")} />
+                    </spriteMaterial>
+                </sprite>
+            </group>
+            <group position={[0, size + 0.2, 0]}>
+                <sprite scale={[0.5, 0.5, 0.5]}>
+                    <spriteMaterial attach="material">
+                        <canvasTexture attach="map" image={createTextCanvas("Yaw (Y)")} />
+                    </spriteMaterial>
+                </sprite>
+            </group>
+            <group position={[0, 0, size + 0.2]}>
+                <sprite scale={[0.5, 0.5, 0.5]}>
+                    <spriteMaterial attach="material">
+                        <canvasTexture attach="map" image={createTextCanvas("Roll (Z)")} />
+                    </spriteMaterial>
+                </sprite>
+            </group>
+        </group>
+    );
+}
+
+// Helper function to create text labels
+function createTextCanvas(text) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = 256;
+    canvas.height = 64;
+    context.fillStyle = 'white';
+    context.font = '48px Arial';
+    context.textAlign = 'center';
+    context.fillText(text, 128, 48);
+    return canvas;
+}
+
 function DroneModel() {
     const { data } = useWebSocket();
     const containerRef = useRef(null);
     const modelGroupRef = useRef();
+    const cameraRef = useRef();
     const [dimensions, setDimensions] = useState({ width: '100%', height: '100%' });
 
     // Convert degrees to radians
     const toRadians = (degrees) => degrees * (Math.PI / 180);
+
+    // Function to adjust camera to fit model
+    useEffect(() => {
+        if (modelGroupRef.current && cameraRef.current) {
+            // Create a bounding box for the entire group
+            const box = new THREE.Box3().setFromObject(modelGroupRef.current);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+
+            // Calculate the distance needed for the camera
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const fov = cameraRef.current.fov * (Math.PI / 180);
+            const distance = (maxDim * 2.5) / Math.tan(fov / 2);
+
+            // Update camera position
+            cameraRef.current.position.set(
+                distance * 0.7,  // X
+                distance * 0.7,  // Y
+                distance * 0.7   // Z
+            );
+            cameraRef.current.lookAt(center);
+            cameraRef.current.updateProjectionMatrix();
+        }
+    }, []);
 
     useEffect(() => {
         const updateDimensions = () => {
@@ -171,7 +290,7 @@ function DroneModel() {
         <ErrorBoundary>
             <div style={{ 
                 position: 'relative',
-                height: 'calc(100vh - 200px)',
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column'
             }}>
@@ -184,11 +303,18 @@ function DroneModel() {
                 >
                     <Canvas shadows>
                         <PerspectiveCamera 
+                            ref={cameraRef}
                             makeDefault 
-                            position={[4, 4, 4]} 
-                            fov={50}
+                            position={[5, 5, 5]}  // Initial position, will be adjusted
+                            fov={45}
                             near={0.1}
                             far={1000}
+                        />
+                        <OrbitControls
+                            enableZoom={false}
+                            enablePan={false}
+                            enableRotate={false}
+                            target={[0, -1.5, 0]}  // Updated to match model center
                         />
                         <Suspense fallback={<LoadingFallback />}>
                             <ambientLight intensity={0.5} />
@@ -218,18 +344,9 @@ function DroneModel() {
                                 infiniteGrid={true}
                             />
                             <group ref={modelGroupRef}>
+                                <RotationHelper />
                                 <STLModel />
                             </group>
-                            <OrbitControls 
-                                enablePan={false}
-                                enableZoom={true}
-                                enableRotate={false}
-                                minDistance={2}
-                                maxDistance={20}
-                                minPolarAngle={0}
-                                maxPolarAngle={Math.PI / 2}
-                                target={[0, 0, 0]}
-                            />
                         </Suspense>
                     </Canvas>
                 </div>
