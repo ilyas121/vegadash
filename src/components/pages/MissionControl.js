@@ -1,20 +1,35 @@
 import React from 'react';
 import DroneModel from '../DroneModel';
+import IMUData from '../IMUData';
 
 function MissionControl() {
     return (
-        <main id="page-main" className="modern-sf" style={{ 
+        <main className="modern-sf" style={{ 
             display: 'flex',
             flexDirection: 'column',
-            height: 'calc(100vh - 150px)', // Adjust based on your header height
-            overflow: 'hidden'
+            height: 'calc(100vh - 250px)',
+            overflow: 'hidden',
+            marginBottom: '100px'
         }}>
-            <div className="block" style={{ flex: 1, minHeight: 0 }}>
-                <div className="block-header overflow-hidden">
-                    <h2 className="block-title animated fadeInDown">DRONE MODEL</h2>
+            <div className="row" style={{ flex: 1, margin: 0, minHeight: 0 }}>
+                {/* Left side - Drone Model */}
+                <div className="col-md-9" style={{ height: '100%', paddingLeft: 0 }}>
+                    <div className="block" style={{ height: '100%' }}>
+                        <div className="block-header overflow-hidden">
+                            <h2 className="block-title animated fadeInDown">DRONE MODEL</h2>
+                        </div>
+                        <div className="block-content" style={{ 
+                            height: 'calc(100% - 51px)',
+                            position: 'relative'
+                        }}>
+                            <DroneModel />
+                        </div>
+                    </div>
                 </div>
-                <div className="block-content" style={{ height: 'calc(100% - 50px)' }}>
-                    <DroneModel />
+                
+                {/* Right side - IMU Data */}
+                <div className="col-md-3" style={{ height: '100%', paddingRight: 0 }}>
+                    <IMUData />
                 </div>
             </div>
         </main>
