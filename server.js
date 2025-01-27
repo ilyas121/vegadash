@@ -26,7 +26,7 @@ wss.on('connection', (ws) => {
     };
 
     // Send data every second
-    const intervalId = setInterval(sendData, 1000);
+    const intervalId = setInterval(sendData, 100);
 
     ws.on('close', () => {
         console.log('Client disconnected');

@@ -6,7 +6,10 @@
   "scripts": {
     "start": "electron .",
     "dev": "concurrently \"webpack serve --mode development\" \"wait-on tcp:8080 && electron .\"",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "pack": "electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "make:mac": "npm run build && electron-builder --mac"
   },
   "build": {
     "appId": "com.vegadash.app",
@@ -16,12 +19,14 @@
     },
     "files": [
       "dist/**/*",
-      "assets/**/*",
+      "src/**/*",
       "main.js",
+      "preload.js",
       "index.html",
       "package.json"
     ],
     "mac": {
+      "icon": "src/img/vegaforce-logo.png",
       "category": "public.app-category.developer-tools",
       "target": [
         "dmg",
@@ -29,12 +34,14 @@
       ]
     },
     "win": {
+      "icon": "src/img/vegaforce-logo.png",
       "target": [
         "nsis",
         "portable"
       ]
     },
     "linux": {
+      "icon": "src/img/vegaforce-logo.png",
       "target": [
         "AppImage",
         "deb"
@@ -54,7 +61,7 @@
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "electron": "^34.0.0",
-    "electron-builder": "^24.9.1",
+    "electron-builder": "^24.13.3",
     "style-loader": "^4.0.0",
     "wait-on": "^8.0.2",
     "webpack": "^5.97.1",
