@@ -38,19 +38,19 @@ function IMUData() {
                     </div>
                     {/* System Calibration Values */}
                     <div className="col-xs-3 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="1300">
-                        <div className="font-s12 text-white-op">SYS CAL 1</div>
+                        <div className="font-s12 text-white-op">SYS CAL</div>
                         <div className="font-s18 text-success">{data?.IMU[6] || 0}</div>
                     </div>
                     <div className="col-xs-3 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="1500">
-                        <div className="font-s12 text-white-op">SYS CAL 2</div>
+                        <div className="font-s12 text-white-op">GYRO CAL</div>
                         <div className="font-s18 text-success">{data?.IMU[7] || 0}</div>
                     </div>
                     <div className="col-xs-3 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="1700">
-                        <div className="font-s12 text-white-op">SYS CAL 3</div>
+                        <div className="font-s12 text-white-op">ACCEL CAL</div>
                         <div className="font-s18 text-success">{data?.IMU[8] || 0}</div>
                     </div>
                     <div className="col-xs-3 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="1900">
-                        <div className="font-s12 text-white-op">SYS CAL 4</div>
+                        <div className="font-s12 text-white-op">MAG CAL</div>
                         <div className="font-s18 text-success">{data?.IMU[9] || 0}</div>
                     </div>
                 </div>
