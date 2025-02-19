@@ -285,20 +285,19 @@ function DroneModel() {
                         target={[0, 1.5, 0]}
                     />
                     <Suspense fallback={<LoadingFallback />}>
-                        <ambientLight intensity={0.5} />
+                        <ambientLight intensity={0.8} />
                         <directionalLight
                             position={[5, 5, 5]}
-                            intensity={1}
+                            intensity={1.5}
                             castShadow
                         />
                         <spotLight
                             position={[-5, 5, -5]}
                             angle={0.3}
                             penumbra={1}
-                            intensity={0.5}
+                            intensity={1}
                             castShadow
                         />
-                        <Environment preset="city" />
                         <group ref={modelGroupRef} position={[0, 0.5, 0]}>
                             <RotationHelper />
                             <STLModel />

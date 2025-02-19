@@ -6,20 +6,22 @@ function PIDGraph({ axis, pidValue, setpointValue }) {
     const { data, sendCommand } = useWebSocket();
     const [graphData, setGraphData] = useState([]);
     const [gains, setGains] = useState({ p: 0, i: 0, d: 0 });
-    const [tempGains, setTempGains] = useState({ p: 0, i: 0, d: 0 });
+    const [tempGains, setTempGains] = useState({ p: '', i: '', d: '' });
+    const [allPIDGains, setAllPIDGains] = useState(Array(9).fill(0));
 
     // Get current PID gains from WebSocket data
     useEffect(() => {
-        if (data?.PIDGains && !tempGains.p && !tempGains.i && !tempGains.d) {
+        if (data?.PIDGains) {
+            setAllPIDGains([...data.PIDGains]);
+            
             const gainIndex = { 'roll': 0, 'pitch': 3, 'yaw': 6 }[axis.toLowerCase()];
             if (gainIndex !== undefined) {
                 const currentGains = {
-                    p: data.PIDGains[gainIndex],
-                    i: data.PIDGains[gainIndex + 1],
-                    d: data.PIDGains[gainIndex + 2]
+                    p: Number(data.PIDGains[gainIndex]) || 0,
+                    i: Number(data.PIDGains[gainIndex + 1]) || 0,
+                    d: Number(data.PIDGains[gainIndex + 2]) || 0
                 };
                 setGains(currentGains);
-                setTempGains(currentGains);
             }
         }
     }, [data?.PIDGains, axis]);
@@ -43,22 +45,36 @@ function PIDGraph({ axis, pidValue, setpointValue }) {
     const handleGainChange = (type, value) => {
         setTempGains(prev => ({
             ...prev,
-            [type]: parseFloat(value) || 0
+            [type]: value
         }));
     };
 
     const handleSubmit = () => {
-        setGains(tempGains);
-        sendCommand({
+        const gainIndex = { 'roll': 0, 'pitch': 3, 'yaw': 6 }[axis.toLowerCase()];
+        const updatedPIDGains = [...allPIDGains];
+        
+        console.log("Index: ", gainIndex);
+        console.log("Current Gains: ", updatedPIDGains);
+        
+        // Update only the relevant gains for current axis
+        updatedPIDGains[gainIndex] = Number(tempGains.p) || 0;
+        updatedPIDGains[gainIndex + 1] = Number(tempGains.i) || 0;
+        updatedPIDGains[gainIndex + 2] = Number(tempGains.d) || 0;
+
+        const pidCommand = {
             type: 'UPDATE_PID',
             axis: axis.toLowerCase(),
-            gains: tempGains
-        });
+            gains: updatedPIDGains // Send all 9 PID values
+        };
+
+        console.log(pidCommand);
+
+        sendCommand(pidCommand);
     };
 
     // Function to display current gain values or N/A
     const displayGainValue = (type) => {
-        if (!data) return 'N/A';
+        if (!data || typeof gains[type] !== 'number' || isNaN(gains[type])) return 'N/A';
         return gains[type].toFixed(2);
     };
 

@@ -4,8 +4,10 @@ import { useWebSocket } from '../context/WebSocketContext';
 function AnimatedCircles() {
     const { data } = useWebSocket(); // Access WebSocket data
 
-    // Get the first receiver value
-    const receiverValue = data?.ReceiverValues[0] || 0;
+    // Get the first receiver value and scale it from 1000-2000 to 0-100
+    const receiverValue = data?.ReceiverValues?.[1] != null && !isNaN(data.ReceiverValues[1]) 
+        ? Math.min(Math.max((data.ReceiverValues[1] - 1000) / 10, 0), 100) 
+        : 0;
 
     return (
         <div className="col-lg-6 col-lg-push-3 overflow-hidden push-20">

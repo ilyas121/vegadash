@@ -1,13 +1,56 @@
-import React, { createContext, useContext, useRef, useState, useEffect } from 'react';
+import React, { createContext, useContext, useRef, useState, useEffect, useCallback } from 'react';
 
 const WebSocketContext = createContext({
     data: null,
-    sendCommand: () => {}
+    sendCommand: () => {},
+    reconnect: () => {},
+    isConnected: false
 });
 
-export const WebSocketProvider = ({ children }) => {
-    const ws = useRef(null);
+export function WebSocketProvider({ children }) {
     const [data, setData] = useState(null);
+    const [isConnected, setIsConnected] = useState(false);
+    const ws = useRef(null);
+
+    const connect = useCallback(() => {
+        ws.current = new WebSocket('ws://192.168.4.1:9090');
+        
+        ws.current.onmessage = (event) => {
+            setData(JSON.parse(event.data));
+        };
+        
+        ws.current.onopen = () => {
+            console.log('WebSocket Connected');
+            setIsConnected(true);
+        };
+
+        ws.current.onclose = () => {
+            console.log('WebSocket Disconnected');
+            setIsConnected(false);
+        };
+
+        ws.current.onerror = () => {
+            console.log('WebSocket Error');
+            setIsConnected(false);
+        };
+    }, []);
+
+    const reconnect = useCallback(() => {
+        console.log('Reconnecting WebSocket');
+        if (ws.current) {
+            ws.current.close();
+        }
+        connect();
+    }, [connect]);
+
+    useEffect(() => {
+        connect();
+        return () => {
+            if (ws.current) {
+                ws.current.close();
+            }
+        };
+    }, [connect]);
 
     const sendCommand = (command) => {
         if (ws.current && ws.current.readyState === WebSocket.OPEN) {
@@ -15,30 +58,11 @@ export const WebSocketProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        ws.current = new WebSocket('ws://localhost:9090');
-
-        ws.current.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                setData(data);
-            } catch (error) {
-                console.error('WebSocket message error:', error);
-            }
-        };
-
-        return () => {
-            if (ws.current) {
-                ws.current.close();
-            }
-        };
-    }, []);
-
     return (
-        <WebSocketContext.Provider value={{ data, sendCommand }}>
+        <WebSocketContext.Provider value={{ data, sendCommand, reconnect, isConnected }}>
             {children}
         </WebSocketContext.Provider>
     );
-};
+}
 
 export const useWebSocket = () => useContext(WebSocketContext); 
