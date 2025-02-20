@@ -1,4 +1,6 @@
 # vegadash
+Sci-Fi Quadcopter Dashboard
+
 This is a full electron and react.js app for getting drone telemetry from an ESP32. 
 The homepage shows all sensor data. 
 <img width="1427" alt="image" src="https://github.com/user-attachments/assets/e41a7849-53fc-4b6f-9559-a4f85fab53eb" />
