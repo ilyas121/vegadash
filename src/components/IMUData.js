@@ -13,11 +13,11 @@ function IMUData() {
             <div className="block-content">
                 <div className="row items-push">
                     <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="100">
-                        <div className="font-s12 text-white-op">ROLL</div>
+                        <div className="font-s12 text-white-op">PITCH</div>
                         <div className="font-s18 text-success">{data?.IMU[0] || 0}</div>
                     </div>
                     <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="300">
-                        <div className="font-s12 text-white-op">PITCH</div>
+                        <div className="font-s12 text-white-op">ROLL</div>
                         <div className="font-s18 text-success">{data?.IMU[1] || 0}</div>
                     </div>
                     <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="500">
@@ -25,11 +25,11 @@ function IMUData() {
                         <div className="font-s18 text-success">{data?.IMU[2] || 0}</div>
                     </div>
                     <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="700">
-                        <div className="font-s12 text-white-op">ROLL VELOCITY</div>
+                        <div className="font-s12 text-white-op">PITCH VELOCITY</div>
                         <div className="font-s18 text-success">{data?.IMU[3] || 0}</div>
                     </div>
                     <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="900">
-                        <div className="font-s12 text-white-op">PITCH VELOCITY</div>
+                        <div className="font-s12 text-white-op">ROLL VELOCITY</div>
                         <div className="font-s18 text-success">{data?.IMU[4] || 0}</div>
                     </div>
                     <div className="col-xs-4 animated fadeIn" data-toggle="appear" data-class="animated fadeIn" data-timeout="1100">
